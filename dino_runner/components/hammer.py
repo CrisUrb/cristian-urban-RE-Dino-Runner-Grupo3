@@ -11,7 +11,7 @@ class Hammer(Sprite):
         self.speedy = 10
 
     def draw(self, screen):
-        screen.blits(self.image, self.rect)
+        screen.blit(self.image, self.rect)
 
     def update(self):
         self.rect.x += self.speedy
