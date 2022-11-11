@@ -12,10 +12,13 @@ class PowerManager():
         self.points = 0
         self.option_numbers =list(range(1, 10))
 
-    def reset_power_ups(self, points):
+    def reset_power_ups(self, points, player):
         self.power_ups = []
-        self.points =  points
+        self.points =  0
         self.when_appears = random.randint(200, 300) + self.points
+        
+        #player.hammer_enabled = HAMMER_POWER_UP
+      
 
     def generate_power_ups(self, points):
         self.points = points 
@@ -48,9 +51,12 @@ class PowerManager():
                     player.hammer_enabled = HAMMER_POWER_UP
                     player.type = power_up.type
                     self.power_ups.remove(power_up)      # Quitamos nuestro power up
+                 
 
     def draw(self, screen):
         for power_up in self.power_ups:
             power_up.draw(screen)
+
+    
 
 

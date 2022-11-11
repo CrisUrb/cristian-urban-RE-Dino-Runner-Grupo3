@@ -1,7 +1,9 @@
 import pygame
 import random
 from dino_runner.components.obstacles.cactus import Cactus
-from dino_runner.utils.constants import(SMALL_CACTUS, LARGE_CACTUS)
+from dino_runner.components.obstacles.birds import Bird
+from dino_runner.utils.constants import(SMALL_CACTUS, LARGE_CACTUS, BIRD)
+
 
 class ObstacleManager:
     def __init__(self):
@@ -34,7 +36,7 @@ class ObstacleManager:
                         game.player.shield_time_up = start_time + 1000
 
                     else:
-                        pygame.time.delay(500)
+                        #pygame.time.delay(100)
                         game.playing = False
                         game.death_count += 1
                         break

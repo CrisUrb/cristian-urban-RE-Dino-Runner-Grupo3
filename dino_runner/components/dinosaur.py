@@ -1,5 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
+from dino_runner.components.obstacles.birds import Bird
 
 from dino_runner.utils.constants import (
     RUNNING, DUCKING, JUMPING, DUCKING_SHIELD, RUNNING_SHIELD, 
@@ -34,6 +35,7 @@ class Dinosaur(Sprite):
         self.dino_jump = False
         self.jump_vel = self.JUMP_VEL
         self.setup_state_booleans()
+        self.bird = Bird()
 
 
     def setup_state_booleans(self):
@@ -45,7 +47,9 @@ class Dinosaur(Sprite):
         self.hammer_enabled = 0
 
 
+
     def update(self, user_input):
+        
         if self.dino_jump:
             self.jump()
         if self.dino_run:
@@ -57,7 +61,7 @@ class Dinosaur(Sprite):
             self.dino_run = False
             self.dino_duck = True 
             self.dino_jump = False
-
+            
         elif user_input[pygame.K_UP] and not self.dino_jump:
             self.dino_run = False
             self.dino_duck = False 
@@ -89,7 +93,13 @@ class Dinosaur(Sprite):
 
     def jump(self):
         self.image = self.jump_img[self.type]
+    
         if self.dino_jump:
+            self.user_input = pygame.key.get_pressed()
+            if self.user_input[pygame.K_DOWN]:           #Si el usuario presiona la flecha hacia abajo el dino bajara rapido
+                self.dino_rect.y -= self.jump_vel * 4
+                self.jump_vel -= 1.6
+
             self.dino_rect.y -= self.jump_vel * 4
             self.jump_vel -= 0.8
 

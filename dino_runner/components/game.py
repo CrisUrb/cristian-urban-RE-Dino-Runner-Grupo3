@@ -3,9 +3,12 @@ import pygame
 from dino_runner.components import text_untils
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.power_ups.power_up_manager import PowerManager
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, RUNNING
+from dino_runner.utils.constants import (BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS,
+                                         RUNNING, CLOUD, HAMMER_TYPE, SHIELD_TYPE, RESET)
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.player_hearts.player_hearts_manager import PlayerHeartManager
+from dino_runner.components.obstacles.birds_manager import BirdsManager
+from dino_runner.components.obstacles.clouds import Clouds
 
 class Game:
     def __init__(self):
@@ -15,7 +18,7 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.playing = False
-        self.game_speed = 20
+        self.game_speed = 15
         self.x_pos_bg = 0
         self.y_pos_bg = 380
         self.player =  Dinosaur()
@@ -26,6 +29,8 @@ class Game:
         self.power_up_manager = PowerManager()
         self.player_heart_manager = PlayerHeartManager()
         self.best_score = 0
+        self.birds_manager = BirdsManager()
+        self.clouds = Clouds()
 
 
     def run(self):
@@ -37,12 +42,18 @@ class Game:
             self.draw()
 
     def create_components(self):
-        
-        self.power_up_manager.reset_power_ups(self.points)
+
         self.obstacle_manager.reset_obstacles(self)
+        self.birds_manager.reset_obstacles(self)
         self.player_heart_manager.reset_hearts()
+        self.power_up_manager.reset_power_ups(self.points, self.player)
+        self.player.update_to_default( RUNNING )
+        self.player.update_to_default( HAMMER_TYPE )
+        self.player.update_to_default( SHIELD_TYPE )
+
         self.points = 0
-        self.game_speed = 20
+        self.game_speed = 15
+
        
     def execute(self):
         while self.running:
@@ -61,6 +72,8 @@ class Game:
         self.player.update(user_input)
         self.obstacle_manager.update(self)
         self.power_up_manager.update(self.points, self.game_speed, self.player)
+        self.birds_manager.update(self)
+        self.clouds.update(self.game_speed)
 
 
     def draw(self):
@@ -71,6 +84,8 @@ class Game:
         self.obstacle_manager.draw(self.screen)
         self.power_up_manager.draw(self.screen)
         self.player_heart_manager.draw(self.screen)
+        self.birds_manager.draw(self.screen)
+        self.clouds.draw(self.screen)
 
         pygame.display.update()
         pygame.display.flip()
@@ -83,6 +98,7 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+
 
     def score(self):
 
@@ -102,6 +118,7 @@ class Game:
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:   #Cuando presionamos una tecla inicia el juego
+
                 self.run()
 
     def print_menu_elements(self):
@@ -124,6 +141,13 @@ class Game:
             self.screen.blit(best_score, best_score_rect)
             self.screen.blit(text, text_rect)
             self.screen.blit(death, death_rect)
+            
+            
+            self.image = RESET
+            self.rect = self.image.get_rect()
+            self.rect.x = SCREEN_WIDTH // 2 - 40
+            self.rect.y = SCREEN_HEIGHT // 1.25
+            self.screen.blit(self.image, (self.rect.x, self.rect.y))
 
         self.screen.blit(RUNNING[0], (half_creen_width  -20, half_creen_heigth -140))
 

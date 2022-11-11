@@ -1,6 +1,6 @@
 import pygame 
 
-from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, RESET
 
 FONT_STYLE = 'freesansbold.ttf'
 black_color = (0,0,0)
