@@ -23,11 +23,13 @@ class Game:
         self.running = True
         self.death_count = 0
         self.player_heart_manager = PlayerHeartManager()
+        self.best_score = 0
 
 
     def run(self):
+        self.points = 0
         self.obstacle_manager.reset_obstacles(self)
-
+        self.player_heart_manager.reset_hearts()
         self.playing = True
         while self.playing:
             self.events()
@@ -63,7 +65,7 @@ class Game:
         pygame.display.update()
         pygame.display.flip()
 
-    def draw_background(self):
+    def draw_background(self):  #Fondo
         image_width = BG.get_width()
         self.screen.blit(BG,(self.x_pos_bg, self.y_pos_bg))
         self.screen.blit(BG,(image_width + self.x_pos_bg, self.y_pos_bg))
@@ -73,6 +75,7 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def score(self):
+
         self.points += 1
         if self.points % 100 == 0:
             self.game_speed += 1
@@ -88,7 +91,7 @@ class Game:
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:   #Cuando presionamos una tecla inicia el juego
-                    self.run()
+                self.run()
 
     def print_menu_elements(self):
         half_creen_heigth = SCREEN_HEIGHT // 2
@@ -99,15 +102,19 @@ class Game:
             self.screen.blit(text, text_rect)
 
         elif self.death_count > 0:
+            if self.best_score < self.points:
+                self.best_score = self.points
             text, text_rect = text_untils.get_centred_message('Press any key to Restart')
-            score, score_rect = text_untils.get_centred_message('You score: '+ str(self.points), heigth = half_creen_heigth + 50)
-            death, death_rect = text_untils.get_centred_message('Death count: '+ str(self.death_count), heigth = half_creen_heigth + 100)
+            score, score_rect = text_untils.get_centred_message('You score: '+ str(self.points), height = half_creen_heigth + 50)
+            best_score, best_score_rect = text_untils.get_centred_message('You best score: '+ str(self.best_score), height = half_creen_heigth + 100)
+            death, death_rect = text_untils.get_centred_message('Death count: '+ str(self.death_count), height = half_creen_heigth + 150)
             
             self.screen.blit(score, score_rect) #Blit muestra en pantalla
+            self.screen.blit(best_score, best_score_rect)
             self.screen.blit(text, text_rect)
             self.screen.blit(death, death_rect)
 
-            self.screen.blit(RUNNING[0], (half_creen_width  -20, half_creen_heigth -140))
+        self.screen.blit(RUNNING[0], (half_creen_width  -20, half_creen_heigth -140))
 
     def show_menu(self):
         self.running = True
